@@ -2,12 +2,23 @@ require("dotenv").config();
 const geocode = require("./utils/geocode");
 const forecast = require("./utils/forecast");
 
-geocode("vilnius", (error, data) => {
-  console.log("Error ", error);
-  console.log("Data ", data);
-});
+const adress = process.argv[2];
 
-forecast(25.32833, 54.6833, (error, data) => {
-  console.log("Error", error);
-  console.log("Data", data);
-});
+if (!adress) {
+  return console.log("Please provide an adress");
+} else {
+  geocode(adress, (error, data) => {
+    if (error) {
+      return console.log(error);
+    }
+
+    forecast(data.latitude, data.longitude, (error, forecastData) => {
+      if (error) {
+        return console.log(error);
+      }
+
+      console.log(data.location);
+      console.log(forecastData);
+    });
+  });
+}
